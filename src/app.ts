@@ -1,4 +1,4 @@
-import { magic } from "./magic.js";
+// import { magic } from './magic';
 
-console.log("imports are working ");
-console.log(magic);
+console.log('imports are working ');
+// console.log(magic);
