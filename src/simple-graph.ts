@@ -1,14 +1,13 @@
-import { DataSet } from 'vis-data/peer';
-import { Timeline } from 'vis-timeline/peer';
-import 'vis-timeline/styles/vis-timeline-graph2d.css';
+import { DataSet } from 'vis-data';
+// import 'vis-timeline/styles/vis-timeline-graph2d.css';
 // You may import from other packages like Vis Network or Vis Graph3D here.
 // You can optionally include locales for Moment if you need any.
 
 // DOM element where the Timeline will be attached
-const container = document.getElementById('visualization');
+export const container = document.getElementById('visualization');
 
 // Create a DataSet (allows two way data-binding)
-const items = new DataSet([
+export const items = new DataSet([
   { id: 1, content: 'item 1', start: '2014-04-20' },
   { id: 2, content: 'item 2', start: '2014-04-14' },
   { id: 3, content: 'item 3', start: '2014-04-18' },
@@ -18,7 +17,3 @@ const items = new DataSet([
 ]);
 
 // Configuration for the Timeline
-const options = {};
-
-// Create a Timeline
-const timeline = new Timeline(container, items, options);

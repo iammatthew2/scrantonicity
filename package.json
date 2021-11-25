@@ -3,14 +3,12 @@
   "version": "1.0.0",
   "main": "out/server.js",
   "scripts": {
-    "build": "tsc",
-    "start": "node .",
+    "serverBuild": "tsc -p server/tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsc && concurrently 'tsc -w' 'nodemon '",
+    "dev": "yarn serverBuild && concurrently 'webpack --watch' 'nodemon '",
+    "start": "yarn serverBuild && webpack && node .",
     "prettier": "prettier 'src/**/*.ts'",
-    "prettier:fix": "prettier --write 'src/**/*.ts'",
-    "wp": "webpack",
-    "wpw": "webpack --watch"
+    "prettier:fix": "prettier --write 'src/**/*.ts'"
   },
   "husky": {
     "hooks": {
@@ -27,13 +25,17 @@
     "@types/node": "^16.11.10",
     "@types/webpack": "^5.28.0",
     "express": "^4.17.1",
-    "moment": "^2.29.1",
-    "vis-data": "^7.1.2",
     "vis-timeline": "^7.5.0",
-    "vis-util": "^5.0.2",
     "webpack": "^5.64.3",
     "webpack-cli": "^4.9.1",
-    "xss": "^1.0.10"
+    "@egjs/hammerjs": "^2.0.0",
+    "keycharm": "^0.4.0",
+    "moment": "^2.24.0",
+    "propagating-hammerjs": "^2.0.0",
+    "uuid": "^8.0.0",
+    "vis-data": "^7.0.0",
+    "vis-util": "^5.0.0",
+    "xss": "^1.0.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",

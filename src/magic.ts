@@ -1,1 +1,1 @@
-export const magic = "exports are working";
+export const magic = 'exports are workiiiiiixxxxing';

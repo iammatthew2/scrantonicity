@@ -6,8 +6,17 @@ const config: webpack.Configuration = {
   entry: './src/app.ts',
   output: {
     path: path.resolve(__dirname, 'out'),
-    filename: 'foo.bundle.js',
+    filename: 'bundle.js',
   },
+  resolve: {
+    extensions: ['.ts'],
+  },
+  plugins: [
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^\.\/locale$/,
+      contextRegExp: /moment$/,
+    }),
+  ],
 };
 
 export default config;
