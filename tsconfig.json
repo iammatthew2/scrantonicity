@@ -8,7 +8,6 @@
     "sourceMap": true,
     "outDir": "out",
     "baseUrl": ".",
-    "outFile": "dist/bundle.js",
     "paths": {
       "*": ["node_modules/*"]
     }

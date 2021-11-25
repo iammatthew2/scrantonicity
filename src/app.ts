@@ -1,13 +1,12 @@
 import { magic } from './magic';
-import { DataSet } from 'vis-data';
-import vis, {
-  DataItem,
-  DataSetDataItem,
-  Graph2d,
-  Graph2dOptions,
-} from 'vis-timeline';
-console.log('imports are working ');
+import { Timeline } from 'vis-timeline/standalone';
+import { container, items } from './simple-graph';
+import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
+
+console.log('imports are working they really are ');
 console.log(magic);
 
+debugger;
+
 // Create a Timeline
-// const timeline = new Timeline(container, items, {});
+const timeline = new Timeline(container, items, {});
