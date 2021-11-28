@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "main": "out/server.js",
   "scripts": {
-    "serverBuild": "tsc -p server/tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "yarn serverBuild && concurrently 'webpack --watch' 'nodemon '",
-    "start": "yarn serverBuild && webpack && node .",
+    "dev": "concurrently 'webpack --watch' 'nodemon '",
+    "start": "webpack && node .",
     "prettier": "prettier 'src/**/*.ts'",
     "prettier:fix": "prettier --write 'src/**/*.ts'"
   },
@@ -25,6 +24,8 @@
     "@types/hammerjs": "^2.0.40",
     "@types/node": "^16.11.10",
     "@types/webpack": "^5.28.0",
+    "@types/webpack-node-externals": "^2.5.3",
+    "@types/ws": "^8.2.0",
     "express": "^4.17.1",
     "keycharm": "^0.4.0",
     "moment": "^2.24.0",
@@ -35,6 +36,7 @@
     "vis-util": "^5.0.0",
     "webpack": "^5.64.3",
     "webpack-cli": "^4.9.1",
+    "ws": "^8.3.0",
     "xss": "^1.0.0"
   },
   "devDependencies": {
@@ -51,6 +53,7 @@
     "prettier": "^2.4.1",
     "ts-loader": "^9.2.6",
     "ts-node": "^10.4.0",
-    "typescript": "^4.5.2"
+    "typescript": "^4.5.2",
+    "webpack-node-externals": "^3.0.0"
   }
 }
