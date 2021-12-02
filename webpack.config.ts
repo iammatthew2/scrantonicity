@@ -35,6 +35,7 @@ const config: webpack.Configuration = {
         test: /\.css$/i,
         use: ['css-loader'],
       },
+      { test: /\.ts$/, use: 'ts-loader' },
     ],
   },
 };
