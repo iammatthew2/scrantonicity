@@ -2,7 +2,7 @@ import express from 'express';
 import moment from 'moment';
 import { WebSocketServer, WebSocket } from 'ws';
 import process from 'process';
-import { webSocketPayload } from './types';
+import { viewState, webSocketPayload } from './types';
 
 const app = express();
 const port = 8000;
@@ -16,12 +16,7 @@ app.listen(port, () => {
   console.log(`application is running on: ${port}.`);
 });
 
-const magicNumber = (item: number) => {
-  return (Math.sin(item / 2) + Math.cos(item / 4)) * 5;
-};
 const socketServer = new WebSocketServer({ port: 8030 });
-
-const messages = ['Start Chatting!'];
 
 socketServer.on('connection', (socketClient) => {
   console.log('connected');
@@ -29,8 +24,13 @@ socketServer.on('connection', (socketClient) => {
     socketServer.clients.forEach((client) => {
       const now = moment().valueOf();
       const tempData: webSocketPayload = {
+        viewState: viewState.discrete,
         graphDataPoints: [
-          { x: now.valueOf(), y: magicNumber(now.valueOf() / 1000) },
+          { x: now.valueOf() - 1000, y: 1 },
+          { x: now.valueOf() - 2000, y: 2 },
+          { x: now.valueOf() + 6000, y: 3 },
+          { x: now.valueOf() + 8000, y: 5 },
+          { x: now.valueOf(), y: 0 },
         ],
       };
       if (client.readyState === WebSocket.OPEN) {
@@ -38,18 +38,8 @@ socketServer.on('connection', (socketClient) => {
       }
     });
   }, 1000);
-  socketClient.on('message', (message) => {
-    console.log('server msg rec');
-    messages.push(message.toString());
-    socketServer.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify([message]));
-      }
-    });
-  });
 
-  socketClient.on('close', (socketClient) => {
-    console.log('closed');
+  socketClient.on('close', () => {
     console.log('Number of clients: ', socketServer.clients.size);
   });
 });

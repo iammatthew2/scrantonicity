@@ -1,4 +1,11 @@
+import { DataItem } from 'vis-timeline/standalone';
+
+export enum viewState {
+  discrete,
+  continuous,
+  static,
+}
 export interface webSocketPayload {
-  viewState?: string;
-  graphDataPoints: { x: number; y: number }[];
+  viewState?: viewState;
+  graphDataPoints: DataItem[];
 }

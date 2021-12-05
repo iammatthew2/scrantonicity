@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { webSocketPayload } from './types';
+import { webSocketPayload, viewState } from './types';
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
 import { DataSet } from 'vis-data';
 import { DataItem, Graph2d, Graph2dOptions } from 'vis-timeline/standalone';
@@ -10,6 +10,7 @@ const dataset = new DataSet();
 const options: Graph2dOptions = {
   start: moment().add(-30, 'seconds').valueOf(),
   end: moment().valueOf(),
+  height: 900,
   dataAxis: {
     left: {
       range: {
@@ -23,98 +24,60 @@ const options: Graph2dOptions = {
   },
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const graph2d = new Graph2d(container, dataset as any as DataItem[], options);
 
-function renderStep(strategy = 'static') {
+function renderStep(strategy = viewState.discrete) {
   const now = moment().valueOf();
   const range = graph2d.getWindow();
-  const interval = range.end.getMilliseconds() - range.start.getMilliseconds();
+  const interval = range.end.valueOf() - range.start.valueOf();
   switch (strategy) {
-    case 'continuous':
-      // continuously move the window
+    case viewState.continuous:
       graph2d.setWindow(now - interval, now, { animation: false });
-      // requestAnimationFrame(() => renderStep);
+      requestAnimationFrame(() => renderStep);
       break;
 
-    case 'discrete':
+    case viewState.discrete:
       graph2d.setWindow(now - interval, now, { animation: false });
-      // setTimeout(renderStep, DELAY);
       break;
 
-    default:
-      if (now > range.end.getMilliseconds()) {
+    case viewState.static:
+      if (now > range.end.valueOf()) {
         graph2d.setWindow(now - 0.1 * interval, now + 0.9 * interval);
       }
-      // setTimeout(renderStep, DELAY);
       break;
   }
 }
-renderStep();
 
 function handleWebSocketResponse(data: webSocketPayload) {
-  dataset.add(data.graphDataPoints[0].x, data.graphDataPoints[0].y);
+  dataset.add(data.graphDataPoints);
   renderStep(data.viewState);
 }
 
-const ws = new WebSocket('ws://localhost:8030');
-ws.onopen = () => {
-  console.log('Now connected');
-};
-ws.onmessage = (event) => {
-  console.log('msg received');
-  const wsResponse = JSON.parse(event.data);
-  handleWebSocketResponse(wsResponse);
-};
-renderStep();
-// const red = (item: number) => {
-//   return (Math.sin(item / 2) + Math.cos(item / 4)) * 5;
-// };
+let timeout = 250;
+function connectWebSocket() {
+  const ws = new WebSocket(`ws://${location.hostname}:8030`);
+  ws.onopen = () => {
+    timeout = 250;
+    console.log('web socket opened');
+  };
+  ws.onmessage = (event) => {
+    const wsResponse = JSON.parse(event.data);
+    handleWebSocketResponse(wsResponse);
+  };
+  ws.onclose = (event?) => {
+    const retryMessage = `Retry in ${timeout}ms`;
+    console.log(
+      event?.reason
+        ? `web socket closed - reason: ${event.reason}. ${retryMessage}`
+        : `${retryMessage}`
+    );
+    setTimeout(connectWebSocket, Math.min(10000, (timeout += timeout)));
+  };
+  ws.onerror = () => {
+    console.log(`web socket error - unable to connect`);
+    ws.close();
+  };
+}
 
-// setInterval(() => {
-//   const now = moment().valueOf();
-//   addDataPoint(now, red(now / 1000));
-// }, 1000);
-
-//  start web sockets - now receiving data here
-// init the graph
-// wait for new socket data, add new graph point and/or adjust graph view
-
-// const container = document.getElementById('visualization');
-// const dataset = new DataSet();
-// const options: Graph2dOptions = {
-//   start: moment().add(-30, 'seconds').valueOf(), // changed so its faster
-//   end: moment().valueOf(),
-//   dataAxis: {
-//     left: {
-//       range: {
-//         min: -10,
-//         max: 10,
-//       },
-//     },
-//   },
-//   drawPoints: {
-//     style: 'circle', // square, circle
-//   },
-//   shaded: {
-//     orientation: 'bottom', // top, bottom
-//   },
-// };
-// const graph2d = new Graph2d(container, dataset as any as DataItem[], options);
-// const graph2dx = new Graph2d(container, dataset, options);
-// const temp: DataItem = { x: 3, y: 44 };
-
-// // eslint-disable-next-line @typescript-eslint/no-explicit-any
-// dataset.add(temp as any as DataItem[]);
-// dataset.add(temp);
-// addDataPoint();
-
-// const ws = new WebSocket('ws://localhost:3030');
-// ws.onopen = () => {
-//   console.log('Now connected');
-// };
-// ws.onmessage = (event) => {
-//   console.log('msg received');
-//   const messages = JSON.parse(event.data);
-//   messages.forEach(addMessage);
-// };
-// a function to generate data points
+connectWebSocket();
