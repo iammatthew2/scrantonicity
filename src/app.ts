@@ -8,7 +8,7 @@ const container = document.getElementById('visualization');
 const dataset = new DataSet();
 
 const options: Graph2dOptions = {
-  start: moment().add(-30, 'seconds').valueOf(),
+  start: Date.now() - 30000,
   end: moment().valueOf(),
   height: 900,
   dataAxis: {
@@ -28,7 +28,7 @@ const options: Graph2dOptions = {
 const graph2d = new Graph2d(container, dataset as any as DataItem[], options);
 
 function renderStep(strategy = viewState.discrete) {
-  const now = moment().valueOf();
+  const now = Date.now();
   const range = graph2d.getWindow();
   const interval = range.end.valueOf() - range.start.valueOf();
   switch (strategy) {
