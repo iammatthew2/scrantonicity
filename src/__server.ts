@@ -1,7 +1,5 @@
 import express from 'express';
-import moment from 'moment';
 import { WebSocketServer, WebSocket } from 'ws';
-import process from 'process';
 import { viewState, webSocketPayload } from './types';
 
 const app = express();
@@ -22,7 +20,7 @@ socketServer.on('connection', (socketClient) => {
   console.log('connected');
   setInterval(() => {
     socketServer.clients.forEach((client) => {
-      const now = moment().valueOf();
+      const now = Date.now();
       const tempData: webSocketPayload = {
         viewState: viewState.discrete,
         graphDataPoints: [
@@ -42,14 +40,4 @@ socketServer.on('connection', (socketClient) => {
   socketClient.on('close', () => {
     console.log('Number of clients: ', socketServer.clients.size);
   });
-});
-
-const stdin = process.stdin;
-
-stdin.resume();
-
-stdin.setEncoding('utf8');
-console.log('starting up');
-stdin.on('data', function (key) {
-  process.stdout.write(`this key received stdout: ${key}`);
 });

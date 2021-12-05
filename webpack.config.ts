@@ -5,9 +5,10 @@ const config: webpack.Configuration = {
   mode: 'development',
   target: 'node',
   externals: {
+    express: "require('express')",
+    // support web sockets
     bufferutil: 'bufferutil',
     'utf-8-validate': 'utf-8-validate',
-    express: "require('express')",
   },
   optimization: {
     minimize: false,
@@ -23,12 +24,6 @@ const config: webpack.Configuration = {
   resolve: {
     extensions: ['.ts', '.js'],
   },
-  plugins: [
-    new webpack.IgnorePlugin({
-      resourceRegExp: /^\.\/locale$/,
-      contextRegExp: /moment$/,
-    }),
-  ],
   module: {
     rules: [
       {

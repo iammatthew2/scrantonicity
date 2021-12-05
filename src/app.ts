@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { webSocketPayload, viewState } from './types';
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
 import { DataSet } from 'vis-data';
@@ -9,7 +8,7 @@ const dataset = new DataSet();
 
 const options: Graph2dOptions = {
   start: Date.now() - 30000,
-  end: moment().valueOf(),
+  end: Date.now(),
   height: 900,
   dataAxis: {
     left: {
