@@ -3,3 +3,6 @@ out
 node_modules
 *.csv
 *.db
+*.log
+*.pyc
+__pycache__
