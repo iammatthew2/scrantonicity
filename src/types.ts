@@ -1,9 +1,9 @@
 import { DataItem } from 'vis-timeline/standalone';
 
 export enum viewState {
-  discrete,
-  continuous,
-  static,
+  discrete = 'discrete',
+  continuous = 'continuous',
+  static = 'static'
 }
 export interface webSocketPayload {
   viewState?: viewState;

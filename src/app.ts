@@ -55,13 +55,15 @@ function handleWebSocketResponse(data: webSocketPayload) {
 
 let timeout = 250;
 function connectWebSocket() {
-  const ws = new WebSocket(`ws://${location.hostname}:8030`);
+  const ws = new WebSocket(`ws://${location.hostname}:8039`);
   ws.onopen = () => {
     timeout = 250;
     console.log('web socket opened');
   };
   ws.onmessage = (event) => {
+    console.log('msg received');
     const wsResponse = JSON.parse(event.data);
+    console.log('response: ', wsResponse);
     handleWebSocketResponse(wsResponse);
   };
   ws.onclose = (event?) => {
