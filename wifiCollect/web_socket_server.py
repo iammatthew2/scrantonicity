@@ -5,7 +5,8 @@ import json
 import asyncio
 import websockets
 
-async def hello(websocket, test):
+async def socket_handler(websocket, test):
+    print(f'handle websocket {websocket} ')
     while True:
         socket_payload = {
             'viewState': 'continuous',
@@ -24,7 +25,7 @@ async def hello(websocket, test):
 
 async def main():
     print("starting up...")
-    async with websockets.serve(hello, "192.168.1.54", 8039):
+    async with websockets.serve(socket_handler, "192.168.1.54", 8039):
         await asyncio.Future()  # run forever
 
 if __name__ == "__main__":

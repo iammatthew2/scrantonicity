@@ -12,7 +12,7 @@ def main():
   database = r'__collect_wifi_data.db'
   filename = '__wifi-devices'
   finalFilename = filename + '-01.csv'
-  wifiScanDuration = 5
+  wifiScanDuration = 60 # one minute
 
   # create a database connection
   conn = create_connection(database)
@@ -24,7 +24,8 @@ def main():
     find_wifi_devices(wifiScanDuration, filename)
     if conn is not None:
       deviceCount = get_number_of_clients(finalFilename)
-      add_device_count(conn, (deviceCount, time.time()))
+      print(f'device count: {deviceCount}')
+      add_device_count(conn, (deviceCount, time.time() * 1000))
     else:
       logging.error("could not connect to " + database)
 
