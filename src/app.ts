@@ -55,7 +55,9 @@ function handleWebSocketResponse(data: webSocketPayload) {
 
 let timeout = 250;
 function connectWebSocket() {
-  const ws = new WebSocket(`ws://${location.hostname}:8039`);
+  console.log('connecting to web socket...')
+  const ws = new WebSocket(`ws://192.168.1.54:8039`);
+  console.log('web socket connected with: ', ws);
   ws.onopen = () => {
     timeout = 250;
     console.log('web socket opened');
