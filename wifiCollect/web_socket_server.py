@@ -1,13 +1,21 @@
 #!/usr/bin/env python
 import time
 import json
-
+from sql_utils import *
 import asyncio
 import websockets
 
 async def socket_handler(websocket, test):
+    database = r'__collect_wifi_data.db'
+    filename = '__wifi-devices'
+    finalFilename = filename + '-01.csv'
+    wifiScanDuration = 60 # one minute
+
+    # create a database connection
+    conn = create_connection(database)
     print(f'handle websocket {websocket} ')
     while True:
+        print(f'{get_last_row(conn)} is the last row' )
         socket_payload = {
             'viewState': 'continuous',
             'graphDataPoints': [

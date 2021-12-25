@@ -3,6 +3,18 @@ import sqlite3
 from sqlite3 import Error
 
 
+def get_last_row(conn):
+    """
+        Get the last row in the DB
+        Temp method
+    """
+    
+    sql = ''' SELECT * FROM device_counts ORDER BY ID DESC LIMIT 1;'''
+
+    cur = conn.cursor()
+    cur.execute(sql)
+    return cur.fetchone()
+
 def create_connection(db_file):
     """ create a database connection to the SQLite database
         specified by db_file
@@ -20,11 +32,11 @@ def create_connection(db_file):
     return conn
 
 
-def add_device_count(conn, task):
+def add_device_count(conn, count):
     """
-    Create a new task
+    Create a new count
     :param conn:
-    :param task:
+    :param count:
     :return:
     """
 
@@ -38,6 +50,6 @@ def add_device_count(conn, task):
               VALUES(?,?) '''
     cur = conn.cursor()
     cur.execute(sql_create_device_counts_table)
-    cur.execute(sql, task)
+    cur.execute(sql, count)
     conn.commit()
     return cur.lastrowid
