@@ -22,5 +22,6 @@ https://medium.com/swlh/scanning-for-mobile-devices-through-wi-fi-using-pi-zero-
 
 Install node: sudo apt-get install nodejs (15+), yarn
 Install SQLLite: sudo apt-get install sqlite3 (might not need this since it's all handled in python)
-Install some python modules: websockets, sqlite
+Install pip3 if not already installed (lite version does not have it)
+Install some python modules: websockets, sqlite, watchdog (for dev)
 Clone this repo

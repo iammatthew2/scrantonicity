@@ -8,6 +8,7 @@ import websockets
 async def socket_handler(websocket, test):
     database = r'__collect_wifi_data.db'
     filename = '__wifi-devices'
+    last_sent_id = 1
     finalFilename = filename + '-01.csv'
     wifiScanDuration = 60 # one minute
 
@@ -15,21 +16,21 @@ async def socket_handler(websocket, test):
     conn = create_connection(database)
     print(f'handle websocket {websocket} ')
     while True:
-        print(f'{get_last_row(conn)} is the last row' )
-        socket_payload = {
-            'viewState': 'continuous',
-            'graphDataPoints': [
-                { 'x': time.time() * 1000 + 1000, 'y': 1 },
-                { 'x': time.time() * 1000 + 2000, 'y': 2 },
-                { 'x': time.time() * 1000 - 6000, 'y': 3 },
-                { 'x': time.time() * 1000 - 8000, 'y': 5 },
-                { 'x': time.time() * 1000, 'y': 0 }
-            ]
-        }
+        last_row = get_last_row(conn)
+        print(f'{last_row} is the last row' )
+        print(f'{last_row}')
+        if last_sent_id < last_row[0]:
+            last_sent_id = last_row[0]
+            socket_payload = {
+                'viewState': 'static',
+                'graphDataPoints': [
+                    { 'x': float(last_row[2]), 'y': last_row[1] },
+                ]
+            }
 
-        await websocket.send(json.dumps(socket_payload))
+            await websocket.send(json.dumps(socket_payload))
         print("sleeping ")
-        time.sleep(5)
+        time.sleep(20)
 
 async def main():
     print("starting up...")
