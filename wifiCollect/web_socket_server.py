@@ -1,24 +1,39 @@
+
 #!/usr/bin/env python
-import time
+import sys
 import json
 from sql_utils import *
 import asyncio
 import websockets
 
-async def socket_handler(websocket, test):
-    database = r'__collect_wifi_data.db'
-    filename = '__wifi-devices'
-    last_sent_id = 1
-    finalFilename = filename + '-01.csv'
-    wifiScanDuration = 60 # one minute
+connected = set()
+primary_instance = False
 
-    # create a database connection
+async def socket_handler(websocket, test):
+    connected.add(websocket)
+    database = r'__collect_wifi_data.db'
+
     conn = create_connection(database)
-    print(f'handle websocket {websocket} ')
+    most_recent_entries = get_last_rows(conn, 10)
+    initial_data_package = {
+        'viewState': 'static',
+    }
+    initial_data_package['graphDataPoints'] = []
+    
+
+    for row in most_recent_entries:
+        initial_data_package['graphDataPoints'].append({ 'x': float(row[2]), 'y': row[1] })
+    
+    last_sent_id = most_recent_entries[0][0]
+    print(f'newest entry in the bulk batch: {last_sent_id}')
+    await websocket.send(json.dumps(initial_data_package))
+
+    await asyncio.sleep(20)
     while True:
-        last_row = get_last_row(conn)
+        last_row = get_last_rows(conn, 1)[0]
         print(f'{last_row} is the last row' )
-        print(f'{last_row}')
+        print(f'last_row[0]: {last_row[0]} {type(last_row[0])}')
+        print(f'id: {last_sent_id} {type(last_sent_id)}')
         if last_sent_id < last_row[0]:
             last_sent_id = last_row[0]
             socket_payload = {
@@ -28,9 +43,19 @@ async def socket_handler(websocket, test):
                 ]
             }
 
-            await websocket.send(json.dumps(socket_payload))
-        print("sleeping ")
-        time.sleep(20)
+            print(f'length: {len(connected)}')
+            try:
+                await websocket.send(json.dumps(socket_payload))
+            except websockets.exceptions.ConnectionClosed:
+                print(f'connection closed for {websocket}')
+                connected.remove(websocket)
+                break
+            except:
+                print(f'Unexpected error: {sys.exc_info()[0]}')
+                break
+
+        await asyncio.sleep(5)
+
 
 async def main():
     print("starting up...")

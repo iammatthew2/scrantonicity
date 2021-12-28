@@ -12,7 +12,13 @@ I needed some way of interacting with the web app and I didn't want to build a k
 
 - splitting this into a repo for the web app and another (python-based) for the webscocket server and the airodump-ng wifi scraper
 - pass the ip address in via command line argument
+<<<<<<< HEAD
 - setup on command to spin up the websocket server, airodump collecting, and a set of nighly cron jobs to calc daily & weekly average data
+=======
+- nightly job to create averages of results
+- weekly job for avererage
+- monthly job to clone DB, delete orig except last 10 rows
+>>>>>>> 7cfcb2a... initial batch get is good. About to use get_rows_greater_than <- untested
 
 ## Setup
 

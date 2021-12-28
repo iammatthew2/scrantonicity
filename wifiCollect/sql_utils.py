@@ -3,17 +3,27 @@ import sqlite3
 from sqlite3 import Error
 
 
-def get_last_row(conn):
+def get_rows_greater_than(conn, id):
+    """
+        Get rows with greter ID
+    """
+    sql = "SELECT * from device_counts ORDER BY ID DESC WHERE ID > ?;"
+
+    cur = conn.cursor()
+    cur.execute(sql, [id])
+    return cur.fetchall()
+
+def get_last_rows(conn, count):
     """
         Get the last row in the DB
         Temp method
     """
     
-    sql = ''' SELECT * FROM device_counts ORDER BY ID DESC LIMIT 1;'''
+    sql = "SELECT * FROM device_counts ORDER BY ID DESC LIMIT ?;"
 
     cur = conn.cursor()
-    cur.execute(sql)
-    return cur.fetchone()
+    cur.execute(sql, [count])
+    return cur.fetchall()
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database
