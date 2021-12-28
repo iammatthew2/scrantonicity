@@ -6,7 +6,19 @@ from sql_utils import *
 import asyncio
 import websockets
 
-time_between_db_queries = 45
+time_between_db_queries = 5
+last_sent_id = 0
+async def websocket_send_db_result(websocket, db_result):
+    global last_sent_id
+    if db_result:
+        socket_package = create_socket_package(db_result)
+        last_sent_id = db_result[0][0]
+        try:
+            await websocket.send(json.dumps(socket_package))
+        except websockets.exceptions.ConnectionClosed:
+            print(f'connection closed for {websocket}')
+        except:
+            print(f'Unexpected error: {sys.exc_info()[0]}')
 
 def create_socket_package(db_response_list, view_state = 'static'):
     socket_data_package = {
@@ -20,32 +32,20 @@ def create_socket_package(db_response_list, view_state = 'static'):
     return socket_data_package
 
 async def socket_handler(websocket, test):
+    global last_sent_id
     database = r'__collect_wifi_data.db'
 
     conn = create_connection(database)
     most_recent_entries = get_last_rows(conn, 100)
 
     # handle the initial payload then wait for more data to be collected
-    if most_recent_entries:
-        initial_data_package = create_socket_package(most_recent_entries)
-        last_sent_id = most_recent_entries[0][0]
-        await websocket.send(json.dumps(initial_data_package))
-
+    print('sending initial data to new socket')
+    await websocket_send_db_result(websocket, most_recent_entries)
     await asyncio.sleep(time_between_db_queries)
-    while True:
-        latest_rows = get_rows_greater_than(conn, last_sent_id)
-        if latest_rows:
-            socket_payload = create_socket_package(latest_rows)
-            last_sent_id = latest_rows[0][0]
-            try:
-                await websocket.send(json.dumps(socket_payload))
-            except websockets.exceptions.ConnectionClosed:
-                print(f'connection closed for {websocket}')
-                break
-            except:
-                print(f'Unexpected error: {sys.exc_info()[0]}')
-                break
 
+    while websocket.state == 1:
+        latest_rows = get_rows_greater_than(conn, last_sent_id)
+        await websocket_send_db_result(websocket, latest_rows)
         await asyncio.sleep(time_between_db_queries)
 
 

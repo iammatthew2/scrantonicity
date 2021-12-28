@@ -2,12 +2,15 @@ import logging
 import sqlite3
 from sqlite3 import Error
 
+# this util should be a class:
+# conn = new DbConnection(db)
+# conn.doStuff()
 
 def get_rows_greater_than(conn, ident):
     """
         Get rows with greter ID
     """
-    sql = "SELECT * from device_counts WHERE ID > ?;"
+    sql = "SELECT * from device_counts WHERE ID > ? ORDER BY ID DESC;"
 
     cur = conn.cursor()
     cur.execute(sql, [ident])
