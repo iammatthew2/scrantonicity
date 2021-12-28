@@ -3,14 +3,14 @@ import sqlite3
 from sqlite3 import Error
 
 
-def get_rows_greater_than(conn, id):
+def get_rows_greater_than(conn, ident):
     """
         Get rows with greter ID
     """
-    sql = "SELECT * from device_counts ORDER BY ID DESC WHERE ID > ?;"
+    sql = "SELECT * from device_counts WHERE ID > ?;"
 
     cur = conn.cursor()
-    cur.execute(sql, [id])
+    cur.execute(sql, [ident])
     return cur.fetchall()
 
 def get_last_rows(conn, count):
