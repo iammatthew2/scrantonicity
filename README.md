@@ -12,6 +12,7 @@ I needed some way of interacting with the web app and I didn't want to build a k
 
 - splitting this into a repo for the web app and another (python-based) for the webscocket server and the airodump-ng wifi scraper
 - pass the ip address in via command line argument
+- setup on command to spin up the websocket server, airodump collecting, and a set of nighly cron jobs to calc daily & weekly average data
 
 ## Setup
 

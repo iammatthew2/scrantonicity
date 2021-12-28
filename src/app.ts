@@ -13,8 +13,8 @@ const options: Graph2dOptions = {
   dataAxis: {
     left: {
       range: {
-        min: -10,
-        max: 10,
+        min: -1,
+        max: 30,
       },
     },
   },
@@ -63,9 +63,17 @@ function connectWebSocket() {
     console.log('web socket opened');
   };
   ws.onmessage = (event) => {
-    console.log('msg received');
-    const wsResponse = JSON.parse(event.data);
+    let wsResponse;
+    try {
+      wsResponse = JSON.parse(event?.data);
+    } catch (e) {
+      wsResponse = event.data;
+    }
+
     console.log('response: ', wsResponse);
+    if (!Array.isArray(wsResponse?.graphDataPoints)) {
+      return;
+    }
     handleWebSocketResponse(wsResponse);
   };
   ws.onclose = (event?) => {
