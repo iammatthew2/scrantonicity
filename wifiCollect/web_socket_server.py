@@ -9,23 +9,27 @@ import websockets
 connected = set()
 primary_instance = False
 
+def create_socket_package(db_response_list, view_state = 'static'):
+    socket_data_package = {
+        'viewState': view_state,
+        'graphDataPoints': []
+    }
+
+    for row in db_response_list:
+        socket_data_package['graphDataPoints'].append({ 'x': float(row[2]), 'y': row[1] })
+
+    return socket_data_package
+
 async def socket_handler(websocket, test):
     connected.add(websocket)
     database = r'__collect_wifi_data.db'
 
     conn = create_connection(database)
-    most_recent_entries = get_last_rows(conn, 10)
-    initial_data_package = {
-        'viewState': 'static',
-    }
-    initial_data_package['graphDataPoints'] = []
-    
+    most_recent_entries = get_last_rows(conn, 100)
 
-    for row in most_recent_entries:
-        initial_data_package['graphDataPoints'].append({ 'x': float(row[2]), 'y': row[1] })
-    
+    initial_data_package = create_socket_package(most_recent_entries)
     last_sent_id = most_recent_entries[0][0]
-    print(f'newest entry in the bulk batch: {last_sent_id}')
+
     await websocket.send(json.dumps(initial_data_package))
 
     await asyncio.sleep(20)
