@@ -28,3 +28,14 @@ Install SQLLite: sudo apt-get install sqlite3 (might not need this since it's al
 Install pip3 if not already installed (lite version does not have it)
 Install some python modules: websockets, sqlite, watchdog (for dev)
 Clone this repo
+
+
+## Startup script
+
+- PM2 process starts for `yarn dev`
+- terminal app opens and streams PM2 logs
+- PM2 logs stop after n seconds or after touch screen input (not sure which)
+- browser opens
+
+sudo vim /etc/rc.local
+/home/pi/.config/lxsession/LXDE-pi/autostart
