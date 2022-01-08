@@ -12,7 +12,7 @@ def main():
   database = r'__collect_wifi_data.db'
   filename = '__wifi-devices'
   finalFilename = filename + '-01.csv'
-  wifiScanDuration = 10 # one minute
+  wifiScanDuration = 60 # one minute
 
   # create a database connection
   conn = create_connection(database)

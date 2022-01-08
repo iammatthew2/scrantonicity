@@ -6,23 +6,28 @@ from sqlite3 import Error
 # conn = new DbConnection(db)
 # conn.doStuff()
 
-def get_rows_greater_than(conn, ident):
+def get_rows_greater_than(conn, ident, useUglyAverage = False):
     """
         Get rows with greter ID
     """
-    sql = "SELECT * from device_counts WHERE ID > ? ORDER BY ID DESC;"
+    if useUglyAverage:
+        sql = "SELECT id, count, date_found, AVG(count) OVER ( ORDER BY id ROWS BETWEEN 1000 PRECEDING AND 1 PRECEDING ) average FROM device_counts WHERE ID > ? ORDER BY ID DESC;"
+    else:
+        sql = "SELECT * from device_counts WHERE ID > ? ORDER BY ID DESC;"
 
     cur = conn.cursor()
     cur.execute(sql, [ident])
     return cur.fetchall()
 
-def get_last_rows(conn, count):
+def get_last_rows(conn, count, useUglyAverage = False):
     """
         Get the last row in the DB
         Temp method
     """
-    
-    sql = "SELECT * FROM device_counts ORDER BY ID DESC LIMIT ?;"
+    if useUglyAverage:
+        sql = "SELECT id, count, date_found, AVG(count) OVER ( ORDER BY id ROWS BETWEEN 1000 PRECEDING AND 1 PRECEDING ) average FROM device_counts ORDER BY ID DESC LIMIT ?;"
+    else:
+        sql = "SELECT * FROM device_counts ORDER BY ID DESC LIMIT ?;"
 
     cur = conn.cursor()
     cur.execute(sql, [count])
