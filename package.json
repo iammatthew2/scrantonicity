@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "concurrently --handle-input 'nodemon' 'webpack --watch'",
-    "start": "webpack && node .",
+    "serve": "webpack && node .",
     "prettier": "prettier 'src/**/*.ts'",
     "prettier:fix": "prettier --write 'src/**/*.ts'"
   },
@@ -27,14 +27,12 @@
     "vis-util": "^5.0.0",
     "webpack": "^5.64.3",
     "webpack-cli": "^4.9.1",
-    "ws": "^8.3.0",
     "xss": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^16.11.10",
     "@types/webpack": "^5.28.0",
     "@types/webpack-node-externals": "^2.5.3",
-    "@types/ws": "^8.2.0",
     "@types/express": "^4.17.13",
     "@typescript-eslint/eslint-plugin": "5.4.0",
     "@typescript-eslint/parser": "5.4.0",

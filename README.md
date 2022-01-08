@@ -16,6 +16,7 @@ I needed some way of interacting with the web app and I didn't want to build a k
 - nightly job to create averages of results
 - weekly job for avererage
 - monthly job to clone DB, delete orig except last 10 rows
+- add logging to TS app
 
 ## Setup
 
@@ -39,3 +40,11 @@ Clone this repo
 
 sudo vim /etc/rc.local
 /home/pi/.config/lxsession/LXDE-pi/autostart
+
+pm2 start yarn --interpreter bash --name scrantonicty -- serve
+https://stackoverflow.com/questions/45887206/using-pm2-to-do-yarn-start-gives-error-while-npm-start-works-fine/51902772#51902772e
+https://app.pm2.io/bucket/61d1d8c53a7c85d32c7132cd/backend/overview/servers
+
+
+power off USB-powered screen: https://github.com/mvp/uhubctl#raspberry-pi-4b
+`$ uhubctl -l 2 -a 0`
