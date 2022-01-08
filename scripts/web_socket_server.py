@@ -2,9 +2,10 @@
 #!/usr/bin/env python
 import sys
 import json
-from sql_utils import *
+from utils.sql_utils import *
 import asyncio
 import websockets
+
 
 time_between_db_queries = 30
 last_sent_id = 0

@@ -1,9 +1,10 @@
+#!/usr/bin/env python
 import logging
 import os
 import time
 import time
-from sql_utils import *
-from wifi_scrape_utils import *
+from utils.sql_utils import *
+from utils.wifi_scrape_utils import *
 
 
 logging.basicConfig(filename='error.log', level=logging.DEBUG)
