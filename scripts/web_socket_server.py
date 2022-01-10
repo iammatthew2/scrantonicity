@@ -1,12 +1,13 @@
-
 #!/usr/bin/env python
 import sys
 import json
 from utils.sql_utils import *
 import asyncio
 import websockets
+import logging
 
 
+logging.basicConfig(filename='socket_server_error.log', level=logging.DEBUG)
 time_between_db_queries = 30
 last_sent_id = 0
 
@@ -21,6 +22,7 @@ async def websocket_send_db_result(websocket, db_result, groupName = 'chicken'):
             print(f'connection closed for {websocket}')
         except:
             print(f'Unexpected error: {sys.exc_info()[0]}')
+            logging.error(f'Unexpected error: {sys.exc.info()[0]}')
 
 def create_socket_package(db_response_list, groupName, view_state = 'static'):
     socket_data_package = {
@@ -36,7 +38,7 @@ def create_socket_package(db_response_list, groupName, view_state = 'static'):
 
 async def socket_handler(websocket, test):
     global last_sent_id
-    database = r'__collect_wifi_data.db'
+    database = r'/home/pi/dev/scrantonicity/scripts/__collect_wifi_data.db'
 
     conn = create_connection(database)
     most_recent_entries = get_last_rows(conn, 1000, True)
@@ -53,6 +55,7 @@ async def socket_handler(websocket, test):
 
 async def main():
     print("starting up...")
+    logging.error("starting up log")
     async with websockets.serve(socket_handler, "192.168.1.54", 8039):
         await asyncio.Future()  # run forever
 

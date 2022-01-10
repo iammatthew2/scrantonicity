@@ -1,4 +1,5 @@
 import logging
+import os
 import sqlite3
 from sqlite3 import Error
 
@@ -7,6 +8,7 @@ from sqlite3 import Error
 # conn.doStuff()
 
 def get_rows_greater_than(conn, ident, useUglyAverage = False):
+    print(f'get greater: {os.getcwd()}')
     """
         Get rows with greter ID
     """
@@ -20,6 +22,7 @@ def get_rows_greater_than(conn, ident, useUglyAverage = False):
     return cur.fetchall()
 
 def get_last_rows(conn, count, useUglyAverage = False):
+    print(f'get last rows: {os.getcwd()}')
     """
         Get the last row in the DB
         Temp method
@@ -39,16 +42,33 @@ def create_connection(db_file):
     :param db_file: database file
     :return: Connection object or None
     """
-    conn = None
     try:
         conn = sqlite3.connect(db_file)
+        # verify_db(conn)
         return conn
     except Error as e:
+        print(f'unable to connect - create_connection() - db file: {db_file}')
+        print(f'error: {e}')
         logging.error('unable to connect')
         logging.error(e)
+        return None
 
-    return conn
 
+def verify_db(conn):
+    """
+    Check if db has expected table
+    """
+
+    sql_verify_db = """SELECT 1 from device_counts limit 1;"""
+    cur = conn.cursor()
+    try:
+        cur.execute(sql_verify_db)
+    except Error as e:
+        print('verify_db failed')
+        logging.error(f'table not found - current working dir: {os.getcwd()}')
+        logging.error(e)
+
+    return cur.fetchall()
 
 def add_device_count(conn, count):
     """

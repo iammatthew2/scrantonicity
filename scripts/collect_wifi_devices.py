@@ -7,13 +7,13 @@ from utils.sql_utils import *
 from utils.wifi_scrape_utils import *
 
 
-logging.basicConfig(filename='error.log', level=logging.DEBUG)
+logging.basicConfig(filename='collect_wifi_devices_error.log', level=logging.DEBUG)
 
 def main():
-  database = r'__collect_wifi_data.db'
+  database = '__collect_wifi_data.db'
   filename = '__wifi-devices'
   finalFilename = filename + '-01.csv'
-  wifiScanDuration = 60 # one minute
+  wifiScanDuration = 10 # one minute
 
   # create a database connection
   conn = create_connection(database)
